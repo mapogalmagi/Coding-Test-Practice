@@ -1,6 +1,7 @@
 import heapq
 import sys
 
+# 백준에서는 input 수정 안 해서 시간초과 났었음
 input = sys.stdin.readline
 n = int(input())
 heap = []
