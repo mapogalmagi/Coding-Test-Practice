@@ -2,7 +2,7 @@ def p_decimal(n, t, m, p):
     num = 1; string = '0'
     num_dic = {10:'A', 11:'B', 12:'C', 13:'D', 14:'E', 15:'F'}
     
-    while len(string) < m*t + p + 2:
+    while len(string) < m*t + p:
         # 밖의 진짜 나눠야 하는 값은 stay, number로 진법 계산
         number = num
         mid = ''
