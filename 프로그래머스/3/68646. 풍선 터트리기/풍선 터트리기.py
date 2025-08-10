@@ -5,6 +5,9 @@ def solution(a):
     right_sorted_min = []
     left_min, right_min = 1_000_000_001,1_000_000_001 
     
+    if len(a) <= 2:
+        return len(a)
+    
     for num in a:
         if num < left_min:
             left_min = num
@@ -20,7 +23,5 @@ def solution(a):
     for i in range(1, len(a)-1):
         if a[i] <= left_sorted_min[i-1] or a[i] <= right_sorted_min[len(a)-2-i]:
             answer += 1
-            
-    
-    
+        
     return answer
