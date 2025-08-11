@@ -1,55 +1,55 @@
 from collections import deque
 
-def bfs(start, end, maps):
-	# 탐색할 방향
-    dy = [0, 1, -1, 0]
-    dx = [1, 0, 0, -1]
+def bfs(graph, queue, end):
+    n = len(graph)
+    m = len(graph[0])
     
-    n = len(maps)       # 세로
-    m = len(maps[0])    # 가로
+    # 방문 여부
     visited = [[False]*m for _ in range(n)]
-    que = deque()
-    flag = False
     
-    # 초깃값 설정
-    for i in range(n):
-        for j in range(m):
-        	# 출발하고자 하는 지점이라면 시작점의 좌표를 기록함
-            if maps[i][j] == start:      
-                que.append((i, j, 0))    
-                # 별도의 cost 리스트를 만들지 않고 que에 바로 기록(0)
-                visited[i][j] = True
-                flag = True; break 
-                # 시작 지점은 한 개만 존재하기 때문에 찾으면 바로 나옴
-        if flag: break
-                
-    # BFS 알고리즘 수행 (핵심)
-    while que:
-        y, x, cost = que.popleft()
-        
-        if maps[y][x] == end:
-            return cost
+    # 상하좌우
+    dx = [0,0,-1,1]
+    dy = [1,-1,0,0]
+    cost = 0
+    
+    while queue:
+        x, y, cost = queue.popleft()
+        visited[x][y] = True
         
         for i in range(4):
-            ny = y + dy[i]
-            nx = x + dx[i]
+            a, b = x+dx[i], y+dy[i]
             
-            # maps 범위내에서 벽이 아니라면 지나갈 수 있음
-            if 0<= ny <n and 0<= nx <m and maps[ny][nx] !='X':
-                if not visited[ny][nx]:	# 아직 방문하지 않는 통로라면
-                    que.append((ny, nx, cost+1))
-                    visited[ny][nx] = True
-                    
-    return -1	# 탈출할 수 없다면
-        
+            # end와 같으면 break
+            if (a,b) == end:
+                return cost
+            if 0<=a<n and 0<=b<m and graph[a][b] != 'X':
+                if not visited[a][b]:
+                    visited[a][b] = True
+                    queue.append((a,b,cost+1))
+    return -1
             
 def solution(maps):
-    path1 = bfs('S', 'L', maps)	# 시작 지점 --> 레버
-    path2 = bfs('L', 'E', maps) # 레버 --> 출구
     
-    # 둘다 -1 이 아니라면 탈출할 수 있음
-    if path1 != -1 and path2 != -1:
-        return path1 + path2
-        
-   	# 둘중 하나라도 -1 이면 탈출할 수 없음
-    return -1
+    queue1 = deque([]) # 시작점 -> 레버
+    queue2 = deque([]) # 레버 -> 도착점
+    end1 = (0,0) # 도착점1 : 레버
+    end2 = (0,0) # 도착점2 : 도착점
+    
+    # 시작점 설정
+    for i in range(len(maps)):
+        for j in range(len(maps[0])):
+            if maps[i][j] == 'S':
+                queue1.append((i,j,1))   # (좌표, 비용)
+            if maps[i][j] == 'L':
+                queue2.append((i,j,1))
+                end1 = (i,j)
+            if maps[i][j] == 'E':
+                end2 = (i,j)
+    
+    a = bfs(maps, queue1, end1)
+    b = bfs(maps, queue2, end2)
+    
+    if a != -1 and b != -1:
+        return a + b
+    else:
+        return -1
